@@ -1,0 +1,9 @@
+services:
+  bun-hello-world:
+    build: 
+      context: . # Docker build context (current directory)
+      pull: true # Equivalent to --pull in Docker CLI, always pull newer version of base images
+    image: bun-hello-world # Tag for the built image
+    ports:
+      - "3000:3000" # Map port 3000 of the host to port 3000 of the container
+    restart: unless-stopped # Restart policy
