@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import * as mongo from './database/mongo';
 import * as gpt from './OpenAI/openai';
+import { WebSocket } from 'ws';
 
 await mongoose.connect('mongodb+srv://neuracare:Dancing12@cluster0.aw0klyp.mongodb.net/NeuraCare?retryWrites=true&w=majority');
 
@@ -19,7 +20,7 @@ async function handleRequest(req :any) {
         reqid = {};
     }
 
-    
+
     // Define your endpoints here
     switch (pathname) {
         case "/":
@@ -36,7 +37,7 @@ async function handleRequest(req :any) {
                 return new Response("Not found", { status: 404 });
             }
 
-        case '/patients/info':
+        case '/patient/info':
             try{
                 let patient = await mongo.getPatientinfo(reqid.id, reqid.query);
                 return new Response(String(patient), { status: 200 });
@@ -67,7 +68,7 @@ async function handleRequest(req :any) {
             try{
                 let todo_gpt = JSON.parse(await gpt.todo(reqid.transcript));
                 let exisitng = await mongo.getPatientinfo(reqid.id, "todo");
-                if (exisitng == undefined){
+                if (exisitng == undefined || exisitng.todo == undefined || exisitng.todo.length == 0 || exisitng.todo == null){
                     exisitng = {"todo": []};
                 }
                 let new_todo = {todo: [...exisitng.todo, todo_gpt.tasks]}
@@ -77,7 +78,7 @@ async function handleRequest(req :any) {
                 let summary_gpt = todo_gpt.summary_points;
                 console.log(summary_gpt);
                 let exisitng_summary = await mongo.getPatientinfo(reqid.id, "summary");
-                if (exisitng_summary == undefined){
+                if (exisitng_summary == undefined || exisitng_summary.summary == undefined || exisitng_summary.summary.length == 0 || exisitng_summary.summary == null){
                     exisitng_summary = {"summary": []};
                 }
                 let new_summary = {summary: [...exisitng_summary.summary, summary_gpt]}
@@ -100,11 +101,35 @@ async function handleRequest(req :any) {
     return new Response("Not found", { status: 404 });
 }
 
+async function handleWebSocket(message :String | Buffer) {
+    let data = await mongo.getPatientinfo(String(message), "name");
+    console.log(data);
+    return data;
+
+}
+
+
+
+
 const server = Bun.serve({
     port: 3000,
     fetch(request: Request) {
+        if(server.upgrade(request)){
+            return new Response(null, {status: 200});
+        }
         return handleRequest(request);
+    },    
+
+    // Create a Websocket server
+    websocket:{
+        async message(ws, message) {
+            console.log(message);
+            let data = await handleWebSocket(message);
+            ws.send(data);
+        },
     }
+
+
   });
   
   console.log(`Listening on localhost: ${server.port}`);

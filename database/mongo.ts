@@ -8,7 +8,9 @@ async function getPatient(id : string) {
 
 async function getPatientinfo( id : string, info : string) {
     let information = await patient.find({_id: id}).select(info)
-    return JSON.parse(JSON.stringify(information))[info] ;
+    console.log(information);
+    // @ts-ignore
+    return information[0][info] ;
 }
 
 async function getCaregiver(id : string) {
