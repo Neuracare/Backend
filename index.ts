@@ -110,7 +110,7 @@ async function handleRequest(req :any) {
                 }
                 for (let i = 0; i < patients[0].patients.length; i++){
                     let patient = await mongo.getPatient(patients[0].patients[i]);
-                    patients[0].patients[i] = patient;
+                    patients[0].patients[i] = patient[0];
                 }
                 const newresp = new Response(JSON.stringify(patients), { status: 200 })
                 newresp.headers.set("Access-Control-Allow-Origin", "*");
