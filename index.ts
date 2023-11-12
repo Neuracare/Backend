@@ -124,6 +124,23 @@ async function handleRequest(req :any) {
                 newresp.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
                 return newresp;
             }
+
+        case "/web/getPatient":
+            try{
+                let patient = await mongo.getPatient(reqid.id);
+                let data = {
+                    "name": patient[0].name,
+                    "heartRate": patient[0].heartRate,
+                    "bloodPressure": patient[0].bloodPressure,
+                    "respiratoryRate": patient[0].respiratoryRate,
+                    "bloodOxygen": patient[0].bloodOxygen,
+                    "location": patient[0].location,
+                }
+                return new Response(JSON.stringify(data), { status: 200 });
+            }
+            catch{
+                return new Response("Not found", { status: 404 });
+            }
         
     }
 
