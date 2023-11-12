@@ -158,27 +158,48 @@ async function handleRequest(req :any) {
     }
 
     return new Response("Not found", { status: 404 });
+
 }
+
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1); // deg2rad below
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // Distance in km
+    return distance;
+  }
+  
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
 
 async function handleWebSocket(message :String | Buffer) {
     let message_parsed = JSON.parse(String(message));
     
     switch (message_parsed.type) {
         case "web":
-            let heartRate = await mongo.getPatientinfo(message_parsed.id, "heartRate");
-            let bloodPressure = await mongo.getPatientinfo(message_parsed.id, "bloodPressure");
-            let respiratoryRate = await mongo.getPatientinfo(message_parsed.id, "respiratoryRate");
-            let bloodOxygen = await mongo.getPatientinfo(message_parsed.id, "bloodOxygen");
-            let location = await mongo.getPatientinfo(message_parsed.id, "location");
-            let data = {
-                "heartRate": heartRate,
-                "bloodPressure": bloodPressure,
-                "respiratoryRate": respiratoryRate,
-                "bloodOxygen": bloodOxygen,
-                "location": location
+            // Check when latitude and longitude 
+            let patients = await mongo.getCaregiver(message_parsed.id);
+            let response = []  as String[];
+            console.log(patients);
+            for(let i = 0; i < patients[0].patients.length; i++){
+                let patient = await mongo.getPatient(patients[0].patients[i]);
+                let location = await mongo.getPatientinfo(patients[0].patients[i], "location");
+                let distance = getDistanceFromLatLonInKm(location.lat, location.long, 43.0720229, -89.4034524);
+                if (distance > 100){
+                    // Send notification to caregiver
+                    response = [ ...response, { "Name": patient[0].name, "range": "out of range"}];
+                }
+                else{
+                    response = [ ...response, { "Name": patient[0].name, "range": "in range"}];
+                }
             }
-            console.log(data);
-            return data;
+            return JSON.stringify(response);
         case "ios":
             return "Hello iOS";
     }
@@ -186,6 +207,17 @@ async function handleWebSocket(message :String | Buffer) {
 
 }
 
+
+async function sendMessageAndCheck(ws, message) {
+    if (ws.readyState === WebSocket.OPEN) {
+        let result = await handleWebSocket(message);
+        ws.send(result);
+        // Call the same function after a delay to check for the location again
+        setTimeout(() => sendMessageAndCheck(ws, message), 10000);
+    } else {
+        console.log('WebSocket is not open');
+    }
+}
 
 
 
@@ -210,8 +242,7 @@ const server = Bun.serve({
     // Create a Websocket server
     websocket:{
         async message(ws, message) {
-            let data = await handleWebSocket(message);
-            ws.send(data);
+            await sendMessageAndCheck(ws, message);
         },
     }
 
