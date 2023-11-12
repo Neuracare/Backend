@@ -4,7 +4,12 @@ const patient_schema = new mongoose.Schema(
   {
     _id: {type: String, required: true},
     name: {type: String, required: true},
-    sound: {type: String, required: true},
+    caregiver: {type: String, required: true},
+    heartRate: {type: Number, required: true},
+    bloodPressure: {type: Number, required: true},
+    respiratoryRate: {type: Number, required: true},
+    bloodOxygen: {type: Number, required: true},
+    location: {type: Object, required: true},
     todo: {type: Array, required: false},
     summary: {type: Array, required: false},
   },

@@ -8,7 +8,7 @@ async function getPatient(id : string) {
 
 async function getPatientinfo( id : string, info : string) {
     let information = await patient.find({_id: id}).select(info)
-    console.log(information);
+    //console.log(information);
     // @ts-ignore
     return information[0][info] ;
 }
@@ -16,6 +16,47 @@ async function getPatientinfo( id : string, info : string) {
 async function getCaregiver(id : string) {
     return await caregiver.find({_id: id});
 }
+
+async function pushTodoPatient(id : string, update : any) {
+    try{
+        // @ts-ignore
+        let patientOne = await patient.findById(id);
+        if (patientOne){
+            // @ts-ignore
+            patientOne.todo.push(update);
+            await patientOne.save();
+        }
+        else{
+            updatePatient(id, {todo: [update]});
+        }
+        return true;
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+
+}
+
+async function pushSummaryPatient(id : string, update : any) {
+    try{
+        // @ts-ignore
+        let patientOne = await patient.findById(id);
+        if (patientOne){
+            // @ts-ignore
+            patientOne.summary.push(update);
+            await patientOne.save();
+        }
+        else{
+            updatePatient(id, {summary: update});
+        }
+    }
+    catch(err){
+        console.log(err);
+        return false;
+    }
+}
+
 
 async function updatePatient(id :string, update :any){
     try{
@@ -65,4 +106,4 @@ async function addCaregiver(newCaregiver :caregiver){
 
 }
 
-export {getPatient, getCaregiver, updatePatient, updateCaregiver, addPatient, addCaregiver, getPatientinfo};
+export {getPatient, getCaregiver, updatePatient, updateCaregiver, addPatient, addCaregiver, getPatientinfo, pushTodoPatient, pushSummaryPatient};

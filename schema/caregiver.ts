@@ -2,13 +2,13 @@ import * as mongoose from 'mongoose';
 
 const caregiver_schema = new mongoose.Schema(
   {
-    name: {type: String, required: true},
-    sound: {type: String, required: true},
+    _id: {type: String, required: true},
+    patients: {type: Array, required: false},
   },
   {
     methods: {
       speak() {
-        console.log(`${this.sound}!`);
+        console.log(`${this.id}!`);
       },
     },
   }
