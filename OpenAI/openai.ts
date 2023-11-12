@@ -11,7 +11,7 @@ async function todo(transcript :string){
         // Format Saturday November 11, 2023, 4pm
         let dateString = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4",
             messages: [
               {
                 "role": "system",
