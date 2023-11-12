@@ -122,6 +122,35 @@ Welcome to the Neuracare Backend Repository. This backend powers the Neuracare p
   - Parameters: `id` (patient ID), `respiratoryRate`, `location`, `heartRate`, `bloodOxygen`
   - Response: Success or error message.
 
+### Blockchain Endpoints
+
+- `GET /blockchain/account`:
+  - Retrieves account information based on the provided account ID.
+  - Parameters: `id` (account ID)
+  - Response: Account data or `Not found` if the account does not exist.
+
+- `POST /blockchain/transaction`:
+  - Creates a new transaction on the Hedera network.
+  - Parameters: `from` (sender account ID), `to` (recipient account ID), `amount` (transaction amount)
+  - Response: Transaction ID or error message.
+
+- `GET /blockchain/transaction`:
+  - Retrieves transaction information based on the provided transaction ID.
+  - Parameters: `id` (transaction ID)
+  - Response: Transaction data or `Not found` if the transaction does not exist.
+
+- `GET /blockchain/balance`:
+  - Retrieves the balance of a specific account.
+  - Parameters: `id` (account ID)
+  - Response: Account balance or error message.
+
+### Hedera Integration
+
+- The blockchain endpoints are powered by the Hedera network.
+- These endpoints are seperate from the existing API endpoints. This was to ensure the security and safety of Users
+- With Hedera, we were able to eliminate the need for "password" based login for patients. 
+
+
 ### Error Handling
 
 - All endpoints return a `404 Not found` status with an appropriate message if the requested resource is not available or the request is invalid.
