@@ -147,7 +147,7 @@ async function handleRequest(req :any) {
                 let location = await mongo.updatePatient(reqid.id, {"location": reqid.location});
                 let heartRate = await mongo.updatePatient(reqid.id, {"heartRate": reqid.heartRate});
                 let bloodOxygen = await mongo.updatePatient(reqid.id, {"bloodOxygen": reqid.bloodOxygen});
-                return new Response(JSON.stringify(patient), { status: 200 });
+                return stat200;
             }
             catch{
                 return new Response("Not found", { status: 404 });
