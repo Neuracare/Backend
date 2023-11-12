@@ -33,7 +33,7 @@ Welcome to the Neuracare Backend Repository. This backend powers the Neuracare p
 - An Auth0 account.
 
 ### Installation
-1. Clone the repository: `git clone [repository-url]`.
+1. Clone the repository: `git clone https://github.com/Neuracare/Backend.git`.
 2. Install dependencies: `bun install`.
 
 ## Database Schema
@@ -162,7 +162,7 @@ This section provides a comprehensive guide for developers to understand and int
 
 ## Contact and Support
 
-For any queries or support, please contact [support-email] or raise an issue in the repository.
+For any queries or support, please contact rmadith@gmail.com or raise an issue in the repository.
 
 ---
 
