@@ -6,6 +6,11 @@ async function getPatient(id : string) {
     return await patient.find({_id: id});
 }
 
+async function getPatientinfo( id : string, info : string) {
+    let information = await patient.find({_id: id}).select(info)
+    return JSON.parse(JSON.stringify(information))[info] ;
+}
+
 async function getCaregiver(id : string) {
     return await caregiver.find({_id: id});
 }
@@ -58,4 +63,4 @@ async function addCaregiver(newCaregiver :caregiver){
 
 }
 
-export {getPatient, getCaregiver, updatePatient, updateCaregiver, addPatient, addCaregiver};
+export {getPatient, getCaregiver, updatePatient, updateCaregiver, addPatient, addCaregiver, getPatientinfo};

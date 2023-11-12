@@ -5,6 +5,8 @@ const patient_schema = new mongoose.Schema(
     _id: {type: String, required: true},
     name: {type: String, required: true},
     sound: {type: String, required: true},
+    todo: {type: Array, required: false},
+    summary: {type: Array, required: false},
   },
   {
     methods: {
