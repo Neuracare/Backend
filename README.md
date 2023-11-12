@@ -131,11 +131,12 @@ Welcome to the Neuracare Backend Repository. This backend powers the Neuracare p
 This section provides a comprehensive guide for developers to understand and interact with the backend API. Each endpoint is clearly described with its HTTP method, required parameters, and expected responses.
 
 ### WebSocket API
-- **Connection:** Instructions on establishing a WebSocket connection for real-time data.
+- **Connection:** Instructions on establishing a WebSocket connection for real-time data/notifications.
 
 ## Deployment
 
-- Deploy the backend on Google Cloud using Kubernetes for scalability and reliability.
+- Deployed the main methods on a server in California
+- Deploy the concurrent solution on Google Cloud using Kubernetes for scalability and reliability.
 - Set up Cloudflare CDN for optimized content delivery.
 
 ## Local Development
